@@ -10,6 +10,8 @@
 #include <QCXXHighlighter>
 #include <QGLSLHighlighter>
 #include <QXMLHighlighter>
+#include <QJavaHighlighter>
+#include <QJSHighlighter>
 #include <QJSONHighlighter>
 #include <QLuaHighlighter>
 #include <QPythonHighlighter>
@@ -32,7 +34,6 @@ MainWindow::MainWindow(QWidget* parent) :
     m_styleCombobox(nullptr),
     m_readOnlyCheckBox(nullptr),
     m_wordWrapCheckBox(nullptr),
-    m_parenthesesEnabledCheckbox(nullptr),
     m_tabReplaceEnabledCheckbox(nullptr),
     m_tabReplaceNumberSpinbox(nullptr),
     m_autoIndentationCheckbox(nullptr),
@@ -53,6 +54,8 @@ void MainWindow::initData()
         {"C++",  loadCode(":/code_samples/cxx.cpp")},
         {"GLSL", loadCode(":/code_samples/shader.glsl")},
         {"XML",  loadCode(":/code_samples/xml.xml")},
+        {"Java",  loadCode(":/code_samples/java.java")},
+        {"JS",  loadCode(":/code_samples/js.js")},
         {"JSON",  loadCode(":/code_samples/json.json")},
         {"LUA",  loadCode(":/code_samples/lua.lua")},
         {"Python",  loadCode(":/code_samples/python.py")}
@@ -70,6 +73,8 @@ void MainWindow::initData()
         {"C++",  new QCXXHighlighter},
         {"GLSL", new QGLSLHighlighter},
         {"XML",  new QXMLHighlighter},
+        {"Java", new QJavaHighlighter },
+        {"JS", new QJSHighlighter},
         {"JSON", new QJSONHighlighter},
         {"LUA",  new QLuaHighlighter},
         {"Python",  new QPythonHighlighter},
@@ -141,11 +146,23 @@ void MainWindow::createWidgets()
 
     m_readOnlyCheckBox           = new QCheckBox("Read Only", setupGroup);
     m_wordWrapCheckBox           = new QCheckBox("Word Wrap", setupGroup);
-    m_parenthesesEnabledCheckbox = new QCheckBox("Auto Parentheses", setupGroup);
     m_tabReplaceEnabledCheckbox  = new QCheckBox("Tab Replace", setupGroup);
     m_tabReplaceNumberSpinbox    = new QSpinBox(setupGroup);
     m_autoIndentationCheckbox    = new QCheckBox("Auto Indentation", setupGroup);
 
+    m_actionToggleComment      = new QAction("Toggle comment", this);
+    m_actionToggleBlockComment = new QAction("Toggle block comment", this);
+
+    m_actionToggleComment->setShortcut(QKeySequence("Ctrl+/"));
+    m_actionToggleBlockComment->setShortcut(QKeySequence("Shift+Ctrl+/"));
+
+    connect(m_actionToggleComment, &QAction::triggered, m_codeEditor, &QCodeEditor::toggleComment);
+    connect(m_actionToggleBlockComment, &QAction::triggered, m_codeEditor, &QCodeEditor::toggleBlockComment);
+
+    m_mainMenu = new QMenu("Actions", this);
+    m_mainMenu->addAction(m_actionToggleComment);
+    m_mainMenu->addAction(m_actionToggleBlockComment);
+    menuBar()->addMenu(m_mainMenu);
 
     // Adding widgets
     m_setupLayout->addWidget(new QLabel(tr("Code sample"), setupGroup));
@@ -158,7 +175,6 @@ void MainWindow::createWidgets()
     m_setupLayout->addWidget(m_styleCombobox);
     m_setupLayout->addWidget(m_readOnlyCheckBox);
     m_setupLayout->addWidget(m_wordWrapCheckBox);
-    m_setupLayout->addWidget(m_parenthesesEnabledCheckbox);
     m_setupLayout->addWidget(m_tabReplaceEnabledCheckbox);
     m_setupLayout->addWidget(m_tabReplaceNumberSpinbox);
     m_setupLayout->addWidget(m_autoIndentationCheckbox);
@@ -173,7 +189,13 @@ void MainWindow::setupWidgets()
     m_codeEditor->setPlainText  (m_codeSamples[0].second);
     m_codeEditor->setSyntaxStyle(m_styles[0].second);
     m_codeEditor->setCompleter  (m_completers[0].second);
-    m_codeEditor->setHighlighter(m_highlighters[0].second);
+    m_codeEditor->setHighlighter(new QCXXHighlighter);
+
+   // m_codeEditor->squiggle(QCodeEditor::SeverityLevel::Warning, {3,2}, {13,5}, "unused variable");
+    m_codeEditor->squiggle(QCodeEditor::SeverityLevel::Error, {7,0}, {8,0}, "Big error");
+
+
+    //m_codeEditor->clearSquiggle();
 
     QStringList list;
     // Code samples
@@ -212,7 +234,6 @@ void MainWindow::setupWidgets()
     m_styleCombobox->addItems(list);
     list.clear();
 
-    m_parenthesesEnabledCheckbox->setChecked(m_codeEditor->autoParentheses());
     m_tabReplaceEnabledCheckbox->setChecked(m_codeEditor->tabReplace());
     m_tabReplaceNumberSpinbox->setValue(m_codeEditor->tabReplaceSize());
     m_tabReplaceNumberSpinbox->setSuffix(tr(" spaces"));
@@ -273,13 +294,6 @@ void MainWindow::performConnections()
                 m_codeEditor->setWordWrapMode(QTextOption::NoWrap);
             }
         }
-    );
-
-    connect(
-        m_parenthesesEnabledCheckbox,
-        &QCheckBox::stateChanged,
-        [this](int state)
-        { m_codeEditor->setAutoParentheses(state != 0); }
     );
 
     connect(

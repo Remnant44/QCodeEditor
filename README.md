@@ -1,4 +1,7 @@
 # Qt Code Editor Widget
+
+[![GitHub Workflow Status](https://github.com/cpeditor/QCodeEditor/workflows/CI:%20Build%20Test/badge.svg?event=push)](https://github.com/cpeditor/QCodeEditor/actions?query=event%3Apush)
+
 It's a widget for editing/viewing code.
 
 This project uses a resource named `qcodeeditor_resources.qrc`. The main application
@@ -20,6 +23,8 @@ must not use a resource file with the same name.
 1. C++ highlight rules.
 1. XML highlight rules.
 1. JSON highligh rules.
+1. Java highligh rules.
+1. JavaScript highligh rules.
 1. Frame selection.
 1. Qt Creator styles.
 

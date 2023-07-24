@@ -1,19 +1,17 @@
 // QCodeEditor
 #include <QLanguage>
+#include "QtCompat.hpp"
 
 // Qt
 #include <QIODevice>
 #include <QXmlStreamReader>
 
-QLanguage::QLanguage(QIODevice* device, QObject* parent) :
-    QObject(parent),
-    m_loaded(false),
-    m_list()
+QLanguage::QLanguage(QIODevice *device, QObject *parent) : QObject(parent), m_loaded(false), m_list()
 {
     load(device);
 }
 
-bool QLanguage::load(QIODevice* device)
+bool QLanguage::load(QIODevice *device)
 {
     if (device == nullptr)
     {
@@ -32,7 +30,7 @@ bool QLanguage::load(QIODevice* device)
 
         if (type == QXmlStreamReader::TokenType::StartElement)
         {
-            if (reader.name() == "section")
+            if (reader.name() == u"section")
             {
                 if (!list.empty())
                 {
@@ -42,18 +40,16 @@ bool QLanguage::load(QIODevice* device)
 
                 name = reader.attributes().value("name").toString();
             }
-            else if (reader.name() == "name")
+            else if (reader.name() == u"name")
             {
                 readText = true;
             }
         }
-        else if (type == QXmlStreamReader::TokenType::Characters &&
-                 readText)
+        else if (type == QXmlStreamReader::TokenType::Characters && readText)
         {
             list << reader.text().toString();
             readText = false;
         }
-
     }
 
     if (!list.empty())
@@ -71,7 +67,7 @@ QStringList QLanguage::keys()
     return m_list.keys();
 }
 
-QStringList QLanguage::names(const QString& key)
+QStringList QLanguage::names(const QString &key)
 {
     return m_list[key];
 }

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 project(QCodeEditor)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 option(BUILD_EXAMPLE "Example building required" Off)
 
@@ -10,9 +10,11 @@ if (${BUILD_EXAMPLE})
     add_subdirectory(example)
 endif()
 
-set(RESOURCES_FILE
-    resources/qcodeeditor_resources.qrc
-)
+if(Qt5Core_VERSION_STRING)
+  qt5_add_resources(QRCS "${CMAKE_CURRENT_SOURCE_DIR}/resources/qcodeeditor_resources.qrc")
+else()
+  qt_add_resources(QRCS "${CMAKE_CURRENT_SOURCE_DIR}/resources/qcodeeditor_resources.qrc")
+endif()
 
 set(INCLUDE_FILES
     include/QHighlightRule
@@ -24,17 +26,20 @@ set(INCLUDE_FILES
     include/QSyntaxStyle
     include/QGLSLCompleter
     include/QGLSLHighlighter
+    include/QJavaHighlighter
+    include/QJSHighlighter
     include/QLanguage
     include/QXMLHighlighter
     include/QJSONHighlighter
     include/QLuaCompleter
     include/QLuaHighlighter
     include/QPythonHighlighter
-    include/QFramedTextAttribute
     include/internal/QHighlightRule.hpp
     include/internal/QHighlightBlockRule.hpp
     include/internal/QCodeEditor.hpp
     include/internal/QCXXHighlighter.hpp
+    include/internal/QJavaHighlighter.hpp
+    include/internal/QJSHighlighter.hpp
     include/internal/QLineNumberArea.hpp
     include/internal/QStyleSyntaxHighlighter.hpp
     include/internal/QSyntaxStyle.hpp
@@ -47,7 +52,6 @@ set(INCLUDE_FILES
     include/internal/QLuaHighlighter.hpp
     include/internal/QPythonCompleter.hpp
     include/internal/QPythonHighlighter.hpp
-    include/internal/QFramedTextAttribute.hpp
 )
 
 set(SOURCE_FILES
@@ -58,6 +62,8 @@ set(SOURCE_FILES
     src/internal/QStyleSyntaxHighlighter.cpp
     src/internal/QGLSLCompleter.cpp
     src/internal/QGLSLHighlighter.cpp
+    src/internal/QJavaHighlighter.cpp
+    src/internal/QJSHighlighter.cpp
     src/internal/QLanguage.cpp
     src/internal/QXMLHighlighter.cpp
     src/internal/QJSONHighlighter.cpp
@@ -65,7 +71,6 @@ set(SOURCE_FILES
     src/internal/QLuaHighlighter.cpp
     src/internal/QPythonCompleter.cpp
     src/internal/QPythonHighlighter.cpp
-    src/internal/QFramedTextAttribute.cpp
 )
 
 # Create code for QObjects
@@ -74,13 +79,17 @@ set(CMAKE_AUTOMOC On)
 # Create code from resource files
 set(CMAKE_AUTORCC ON)
 
+# Generate compile_commands.json in build/ for analyzers like clang-tidy.
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Find includes in corresponding build directories
-find_package(Qt5Core    CONFIG REQUIRED)
-find_package(Qt5Widgets CONFIG REQUIRED)
-find_package(Qt5Gui     CONFIG REQUIRED)
+if(NOT QT_VERSION)
+  set(QT_VERSION Qt5)
+endif()
+find_package(${QT_VERSION} REQUIRED COMPONENTS Core Gui Widgets)
 
 add_library(QCodeEditor STATIC
-    ${RESOURCES_FILE}
+    ${QRCS}
     ${SOURCE_FILES}
     ${INCLUDE_FILES}
 )
@@ -91,20 +100,18 @@ target_include_directories(QCodeEditor PUBLIC
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(QCodeEditor
-		PRIVATE
-		-ansi
-		-pedantic
-		-Wall
-		-Wextra
-		-Weffc++
-		-Woverloaded-virtual
-		-Winit-self
-		-Wunreachable-code
-	)
+        PRIVATE
+        -pedantic
+        -Wall
+        -Wextra
+        -Woverloaded-virtual
+        -Winit-self
+        -Wunreachable-code
+    )
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 target_link_libraries(QCodeEditor
-    Qt5::Core
-    Qt5::Widgets
-    Qt5::Gui
+    ${QT_PREFIX}::Core
+    ${QT_PREFIX}::Widgets
+    ${QT_PREFIX}::Gui
 )

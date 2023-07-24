@@ -1,21 +1,18 @@
 // QCodeEditor
 #include <QSyntaxStyle>
+#include "QtCompat.hpp"
 
 // Qt
 #include <QDebug>
-#include <QXmlStreamReader>
 #include <QFile>
+#include <QXmlStreamReader>
 
-QSyntaxStyle::QSyntaxStyle(QObject* parent) :
-    QObject(parent),
-    m_name(),
-    m_data(),
-    m_loaded(false)
+
+QSyntaxStyle::QSyntaxStyle(QObject *parent) : QObject(parent), m_name(), m_data(), m_loaded(false)
 {
-
 }
 
-bool QSyntaxStyle::load(QString fl)
+bool QSyntaxStyle::load(const QString &fl)
 {
     QXmlStreamReader reader(fl);
 
@@ -23,16 +20,16 @@ bool QSyntaxStyle::load(QString fl)
     {
         auto token = reader.readNext();
 
-        if(token == QXmlStreamReader::StartElement)
+        if (token == QXmlStreamReader::StartElement)
         {
-            if (reader.name() == "style-scheme")
+            if (reader.name() == u"style-scheme")
             {
                 if (reader.attributes().hasAttribute("name"))
                 {
                     m_name = reader.attributes().value("name").toString();
                 }
             }
-            else if (reader.name() == "style")
+            else if (reader.name() == u"style")
             {
                 auto attributes = reader.attributes();
 
@@ -50,14 +47,12 @@ bool QSyntaxStyle::load(QString fl)
                     format.setForeground(QColor(attributes.value("foreground").toString()));
                 }
 
-                if (attributes.hasAttribute("bold") &&
-                    attributes.value("bold") == "true")
+                if (attributes.hasAttribute("bold") && attributes.value("bold") == u"true")
                 {
                     format.setFontWeight(QFont::Weight::Bold);
                 }
 
-                if (attributes.hasAttribute("italic") &&
-                    attributes.value("italic") == "true")
+                if (attributes.hasAttribute("italic") && attributes.value("italic") == u"true")
                 {
                     format.setFontItalic(true);
                 }
@@ -68,31 +63,31 @@ bool QSyntaxStyle::load(QString fl)
 
                     auto s = QTextCharFormat::UnderlineStyle::NoUnderline;
 
-                    if (underline == "SingleUnderline")
+                    if (underline == u"SingleUnderline")
                     {
                         s = QTextCharFormat::UnderlineStyle::SingleUnderline;
                     }
-                    else if (underline == "DashUnderline")
+                    else if (underline == u"DashUnderline")
                     {
                         s = QTextCharFormat::UnderlineStyle::DashUnderline;
                     }
-                    else if (underline == "DotLine")
+                    else if (underline == u"DotLine")
                     {
                         s = QTextCharFormat::UnderlineStyle::DotLine;
                     }
-                    else if (underline == "DashDotLine")
+                    else if (underline == u"DashDotLine")
                     {
                         s = QTextCharFormat::DashDotLine;
                     }
-                    else if (underline == "DashDotDotLine")
+                    else if (underline == u"DashDotDotLine")
                     {
                         s = QTextCharFormat::DashDotDotLine;
                     }
-                    else if (underline == "WaveUnderline")
+                    else if (underline == u"WaveUnderline")
                     {
                         s = QTextCharFormat::WaveUnderline;
                     }
-                    else if (underline == "SpellCheckUnderline")
+                    else if (underline == u"SpellCheckUnderline")
                     {
                         s = QTextCharFormat::SpellCheckUnderline;
                     }
@@ -102,6 +97,13 @@ bool QSyntaxStyle::load(QString fl)
                     }
 
                     format.setUnderlineStyle(s);
+                }
+
+                if (attributes.hasAttribute("underlineColor"))
+                {
+                    auto color = attributes.value("underlineColor");
+
+                    format.setUnderlineColor(QColor(color.toString()));
                 }
 
                 m_data[name.toString()] = format;
@@ -119,7 +121,7 @@ QString QSyntaxStyle::name() const
     return m_name;
 }
 
-QTextCharFormat QSyntaxStyle::getFormat(QString name) const
+QTextCharFormat QSyntaxStyle::getFormat(const QString &name) const
 {
     auto result = m_data.find(name);
 
@@ -136,7 +138,7 @@ bool QSyntaxStyle::isLoaded() const
     return m_loaded;
 }
 
-QSyntaxStyle* QSyntaxStyle::defaultStyle()
+QSyntaxStyle *QSyntaxStyle::defaultStyle()
 {
     static QSyntaxStyle style;
 
