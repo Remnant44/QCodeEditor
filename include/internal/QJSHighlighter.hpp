@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QJSHIGHLIGHTER_HPP
+#define QJSHIGHLIGHTER_HPP
 
 #include <QHighlightRule>
 #include <QStyleSyntaxHighlighter> // Required for inheritance
@@ -33,3 +34,5 @@ class QJSHighlighter : public QStyleSyntaxHighlighter
     QRegularExpression m_commentStartPattern;
     QRegularExpression m_commentEndPattern;
 };
+
+#endif

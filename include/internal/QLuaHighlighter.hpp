@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QLUAHIGHLIGHTER_HPP
+#define QLUAHIGHLIGHTER_HPP
 
 // QCodeEditor
 #include <QHighlightBlockRule>
@@ -37,3 +38,5 @@ class QLuaHighlighter : public QStyleSyntaxHighlighter
     QRegularExpression m_functionPattern;
     QRegularExpression m_defTypePattern;
 };
+
+#endif

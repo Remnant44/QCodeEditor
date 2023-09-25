@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QSTYLESYNTAXHIGHLIGHTER_HPP
+#define QSTYLESYNTAXHIGHLIGHTER_HPP
 
 // Qt
 #include <QSyntaxHighlighter> // Required for inheritance
@@ -86,3 +87,5 @@ class QStyleSyntaxHighlighter : public QSyntaxHighlighter
     QString m_startCommentBlockSequence;
     QString m_endCommentBlockSequence;
 };
+
+#endif

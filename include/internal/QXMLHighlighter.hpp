@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QXMLHIGHLIGHTER_HPP
+#define QXMLHIGHLIGHTER_HPP
 
 // QCodeEditor
 #include <QStyleSyntaxHighlighter> // Required for inheritance
@@ -34,3 +35,5 @@ class QXMLHighlighter : public QStyleSyntaxHighlighter
     QRegularExpression m_xmlCommentBeginRegex;
     QRegularExpression m_xmlCommentEndRegex;
 };
+
+#endif

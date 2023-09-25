@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QPYTHONHIGHLIGHTER_HPP
+#define QPYTHONHIGHLIGHTER_HPP
 
 // QCodeEditor
 #include <QHighlightBlockRule>
@@ -36,3 +37,5 @@ class QPythonHighlighter : public QStyleSyntaxHighlighter
     QRegularExpression m_functionPattern;
     QRegularExpression m_defTypePattern;
 };
+
+#endif

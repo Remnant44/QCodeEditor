@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QLINENUMBERAREA_HPP
+#define QLINENUMBERAREA_HPP
 
 // Qt
 #include <QWidget> // Required for inheritance
@@ -57,3 +58,5 @@ class QLineNumberArea : public QWidget
 
     QMap<int, QCodeEditor::SeverityLevel> m_squiggles;
 };
+
+#endif

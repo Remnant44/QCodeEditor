@@ -7,5 +7,6 @@
         <file>languages/lua.xml</file>
         <file>languages/python.xml</file>
         <file>languages/js.xml</file>
+        <file>drakula_style.xml</file>
     </qresource>
 </RCC>

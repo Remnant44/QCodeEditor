@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QXmlStreamReader>
+#include <QDirIterator>
 
 
 QSyntaxStyle::QSyntaxStyle(QObject *parent) : QObject(parent), m_name(), m_data(), m_loaded(false)
@@ -159,4 +160,30 @@ QSyntaxStyle *QSyntaxStyle::defaultStyle()
     }
 
     return &style;
+}
+
+QVector<QSyntaxStyle *> QSyntaxStyle::builtinStyles()
+{
+	static QVector<QSyntaxStyle *> builtins;
+	
+	if(builtins.isEmpty()) {
+		Q_INIT_RESOURCE(qcodeeditor_resources);
+		
+		QDirIterator it(":/", QStringList() << "*.xml", QDir::Files);
+		while (it.hasNext()) {
+			QFile fl(it.next());
+			
+			if (!fl.open(QIODevice::ReadOnly))
+				continue;
+			
+			QScopedPointer<QSyntaxStyle> style(new QSyntaxStyle());
+			
+			if (!style->load(fl.readAll()))
+				continue;
+			
+			builtins.push_back(style.take());
+		}
+	}
+	
+	return builtins;
 }

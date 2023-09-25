@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QGLSLCOMPLETER_HPP
+#define QGLSLCOMPLETER_HPP
 
 // Qt
 #include <QCompleter> // Required for inheritance
@@ -18,3 +19,5 @@ class QGLSLCompleter : public QCompleter
      */
     explicit QGLSLCompleter(QObject *parent = nullptr);
 };
+
+#endif

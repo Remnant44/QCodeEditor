@@ -24,6 +24,7 @@
 #include <QSpinBox>
 #include <QGroupBox>
 #include <QLabel>
+#include <QFile>
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
@@ -80,12 +81,17 @@ void MainWindow::initData()
         {"Python",  new QPythonHighlighter},
     };
 
-    m_styles = {
-        {"Default", QSyntaxStyle::defaultStyle()}
-    };
+    m_styles = {};
+	
+	auto styles = QSyntaxStyle::builtinStyles();
+	for(auto it : styles) {
+		m_styles.push_back(
+			{it->name(), it}
+		);
+	}
 
     // Loading styles
-    loadStyle(":/styles/drakula.xml");
+    loadStyle(":/styles/custom.xml");
 }
 
 QString MainWindow::loadCode(QString path)

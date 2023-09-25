@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QLUACOMPLETER_HPP
+#define QLUACOMPLETER_HPP
 
 // Qt
 #include <QCompleter> // Required for inheritance
@@ -18,3 +19,5 @@ class QLuaCompleter : public QCompleter
      */
     explicit QLuaCompleter(QObject *parent = nullptr);
 };
+
+#endif

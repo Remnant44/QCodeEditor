@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QSYNTAXSTYLE_HPP
+#define QSYNTAXSTYLE_HPP
 
 // Qt
 #include <QMap>
@@ -54,6 +55,12 @@ class QSyntaxStyle : public QObject
      * @return Pointer to default style.
      */
     static QSyntaxStyle *defaultStyle();
+	
+	/**
+     * @brief Static method for getting all the built-in styles.
+     * @return List of pointer to builtin styles.
+     */
+    static QVector<QSyntaxStyle *> builtinStyles();
 
   private:
     QString m_name;
@@ -62,3 +69,5 @@ class QSyntaxStyle : public QObject
 
     bool m_loaded;
 };
+
+#endif

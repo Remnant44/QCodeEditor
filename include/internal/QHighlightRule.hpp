@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QHIGHLIGHTRULE_HPP
+#define QHIGHLIGHTRULE_HPP
 
 // Qt
 #include <QRegularExpression>
@@ -17,3 +18,5 @@ struct QHighlightRule
     QRegularExpression pattern;
     QString formatName;
 };
+
+#endif

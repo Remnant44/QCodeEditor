@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QLANGUAGE_HPP
+#define QLANGUAGE_HPP
 
 // Qt
 #include <QMap>
@@ -52,3 +53,5 @@ class QLanguage : public QObject
 
     QMap<QString, QStringList> m_list;
 };
+
+#endif

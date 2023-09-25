@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QCODEEDITOR_HPP
+#define QCODEEDITOR_HPP
 
 // Qt
 #include <QTextEdit> // Required for inheritance
@@ -407,3 +408,5 @@ class QCodeEditor : public QTextEdit
 
     QVector<Parenthesis> m_parentheses;
 };
+
+#endif

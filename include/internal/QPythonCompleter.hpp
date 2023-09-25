@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QPYTHONCOMPLETER_HPP
+#define QPYTHONCOMPLETER_HPP
 
 // Qt
 #include <QCompleter> // Required for inheritance
@@ -18,3 +19,5 @@ class QPythonCompleter : public QCompleter
      */
     explicit QPythonCompleter(QObject *parent = nullptr);
 };
+
+#endif

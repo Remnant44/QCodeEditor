@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QJSONHIGHLIGHTER_HPP
+#define QJSONHIGHLIGHTER_HPP
 
 // QCodeEditor
 #include <QHighlightRule>
@@ -28,3 +29,5 @@ class QJSONHighlighter : public QStyleSyntaxHighlighter
     QVector<QHighlightRule> m_highlightRules;
     QRegularExpression m_keyRegex;
 };
+
+#endif
