@@ -4,7 +4,6 @@
 #include <QSyntaxStyle>
 
 // Qt
-#include <QDebug>
 #include <QFile>
 
 QGLSLHighlighter::QGLSLHighlighter(QTextDocument *document)

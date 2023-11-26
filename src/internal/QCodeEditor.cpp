@@ -383,10 +383,11 @@ void QCodeEditor::toggleBlockComment()
 {
     if (m_highlighter == nullptr)
         return;
-    QString commentStart = m_highlighter->startCommentBlockSequence();
-    QString commentEnd = m_highlighter->endCommentBlockSequence();
-
-    if (commentStart.isEmpty() || commentEnd.isEmpty())
+    QString commentStart = m_highlighter->startToggleCommentBlockSequence(textCursor().selectedText());
+	if (commentStart.isEmpty())
+		return;
+    QString commentEnd = m_highlighter->endToggleCommentBlockSequence(commentStart);
+    if (commentEnd.isEmpty())
         return;
 
     auto cursor = textCursor();
@@ -523,10 +524,8 @@ void QCodeEditor::highlightOccurrences()
     if (cursor.hasSelection())
     {
         auto text = cursor.selectedText();
-        if (QRegularExpression(
-                R"((?:[_a-zA-Z][_a-zA-Z0-9]*)|(?<=\b|\s|^)(?i)(?:(?:(?:(?:(?:\d+(?:'\d+)*)?\.(?:\d+(?:'\d+)*)(?:e[+-]?(?:\d+(?:'\d+)*))?)|(?:(?:\d+(?:'\d+)*)\.(?:e[+-]?(?:\d+(?:'\d+)*))?)|(?:(?:\d+(?:'\d+)*)(?:e[+-]?(?:\d+(?:'\d+)*)))|(?:0x(?:[0-9a-f]+(?:'[0-9a-f]+)*)?\.(?:[0-9a-f]+(?:'[0-9a-f]+)*)(?:p[+-]?(?:\d+(?:'\d+)*)))|(?:0x(?:[0-9a-f]+(?:'[0-9a-f]+)*)\.?(?:p[+-]?(?:\d+(?:'\d+)*))))[lf]?)|(?:(?:(?:[1-9]\d*(?:'\d+)*)|(?:0[0-7]*(?:'[0-7]+)*)|(?:0x[0-9a-f]+(?:'[0-9a-f]+)*)|(?:0b[01]+(?:'[01]+)*))(?:u?l{0,2}|l{0,2}u?)))(?=\b|\s|$))")
-                .match(text)
-                .captured() == text)
+		static QRegularExpression occurrenceMatch(R"((?:[_a-zA-Z][_a-zA-Z0-9]*)|(?<=\b|\s|^)(?i)(?:(?:(?:(?:(?:\d+(?:'\d+)*)?\.(?:\d+(?:'\d+)*)(?:e[+-]?(?:\d+(?:'\d+)*))?)|(?:(?:\d+(?:'\d+)*)\.(?:e[+-]?(?:\d+(?:'\d+)*))?)|(?:(?:\d+(?:'\d+)*)(?:e[+-]?(?:\d+(?:'\d+)*)))|(?:0x(?:[0-9a-f]+(?:'[0-9a-f]+)*)?\.(?:[0-9a-f]+(?:'[0-9a-f]+)*)(?:p[+-]?(?:\d+(?:'\d+)*)))|(?:0x(?:[0-9a-f]+(?:'[0-9a-f]+)*)\.?(?:p[+-]?(?:\d+(?:'\d+)*))))[lf]?)|(?:(?:(?:[1-9]\d*(?:'\d+)*)|(?:0[0-7]*(?:'[0-7]+)*)|(?:0x[0-9a-f]+(?:'[0-9a-f]+)*)|(?:0b[01]+(?:'[01]+)*))(?:u?l{0,2}|l{0,2}u?)))(?=\b|\s|$))");
+        if (occurrenceMatch.match(text).captured() == text)
         {
             auto doc = document();
             cursor = doc->find(text, 0, QTextDocument::FindWholeWords | QTextDocument::FindCaseSensitively);
@@ -617,12 +616,10 @@ void QCodeEditor::proceedCompleterEnd(QKeyEvent *e)
         return;
     }
 
-    static QString eow(R"(~!@#$%^&*()_+{}|:"<>?,./;'[]\-=)");
-
     auto isShortcut = ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_Space);
-    auto completionPrefix = wordUnderCursor();
+    QString completionPrefix = m_completer->getCompleterPrefix(textCursor()).selectedText();
 
-    if (!isShortcut && (e->text().isEmpty() || completionPrefix.length() < 2 || eow.contains(e->text().right(1))))
+    if (!isShortcut && (e->text().isEmpty() || completionPrefix.length() < 2 || m_completer->isStopCharacter(e->text().right(1).at(0))))
     {
         m_completer->popup()->hide();
         return;
@@ -652,7 +649,7 @@ void QCodeEditor::keyPressEvent(QKeyEvent *e)
             QKeyEvent pureEnter(QEvent::KeyPress, Qt::Key_Enter, Qt::NoModifier);
             if (e->modifiers() == Qt::ControlModifier)
             {
-                livecodeTrigger();
+                emit livecodeTrigger();
                 return;
             }
             else if (e->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
@@ -718,9 +715,8 @@ void QCodeEditor::keyPressEvent(QKeyEvent *e)
 
         // Auto indentation
 
-        QString indentationSpaces = QRegularExpression("^\\s*")
-                                        .match(document()->findBlockByNumber(textCursor().blockNumber()).text())
-                                        .captured();
+		static QRegularExpression indentationRegex("^\\s*");
+        QString indentationSpaces = indentationRegex.match(document()->findBlockByNumber(textCursor().blockNumber()).text()).captured();
 
         // Have Qt Edior like behaviour, if {|} and enter is pressed indent the two
         // parenthesis
@@ -814,6 +810,7 @@ void QCodeEditor::keyPressEvent(QKeyEvent *e)
                             cursor.setPosition(startPos + 1, QTextCursor::KeepAnchor);
                         }
                         setTextCursor(cursor);
+						proceedCompleterEnd(e);
                         return;
                     }
                 }
@@ -826,6 +823,7 @@ void QCodeEditor::keyPressEvent(QKeyEvent *e)
                         if (symbol == p.right)
                         {
                             moveCursor(QTextCursor::NextCharacter);
+							proceedCompleterEnd(e);
                             return;
                         }
                     }
@@ -834,6 +832,7 @@ void QCodeEditor::keyPressEvent(QKeyEvent *e)
                     {
                         insertPlainText(QString(p.left) + p.right);
                         moveCursor(QTextCursor::PreviousCharacter);
+						proceedCompleterEnd(e);
                         return;
                     }
                 }
@@ -908,7 +907,7 @@ int QCodeEditor::tabReplaceSize() const
     return m_tabReplace.size();
 }
 
-void QCodeEditor::setCompleter(QCompleter *completer)
+void QCodeEditor::setCompleter(QCodeEditorCompleter *completer)
 {
     if (m_completer)
     {
@@ -996,10 +995,9 @@ void QCodeEditor::insertCompletion(const QString &s)
         return;
     }
 
-    auto tc = textCursor();
-    tc.select(QTextCursor::SelectionType::WordUnderCursor);
-    tc.insertText(s);
-    setTextCursor(tc);
+	QTextCursor cursor = m_completer->getCompleterPrefix(textCursor());
+	cursor.insertText(s);
+    setTextCursor(cursor);
 }
 
 QCompleter *QCodeEditor::completer() const
@@ -1085,13 +1083,6 @@ QChar QCodeEditor::charUnderCursor(int offset) const
     }
 
     return text[index];
-}
-
-QString QCodeEditor::wordUnderCursor() const
-{
-    auto tc = textCursor();
-    tc.select(QTextCursor::WordUnderCursor);
-    return tc.selectedText();
 }
 
 void QCodeEditor::insertFromMimeData(const QMimeData *source)

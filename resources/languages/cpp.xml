@@ -85,6 +85,41 @@
         <name>xor</name>
         <name>xor_eq</name>
     </section>
+	<section name="Type">
+		<name>uint8_t</name>
+		<name>int8_t</name>
+		<name>uint16_t</name>
+		<name>int16_t</name>
+		<name>uint32_t</name>
+		<name>int32_t</name>
+		<name>uint64_t</name>
+		<name>int64_t</name>
+		<name>uint_least8_t</name>
+		<name>int_least8_t</name>
+		<name>uint_least16_t</name>
+		<name>int_least16_t</name>
+		<name>uint_least32_t</name>
+		<name>int_least32_t</name>
+		<name>uint_least64_t</name>
+		<name>int_least64_t</name>
+		<name>uint_fast8_t</name>
+		<name>int_fast8_t</name>
+		<name>uint_fast16_t</name>
+		<name>int_fast16_t</name>
+		<name>uint_fast32_t</name>
+		<name>int_fast32_t</name>
+		<name>uint_fast64_t</name>
+		<name>int_fast64_t</name>
+		<name>intmax_t</name>
+		<name>intptr_t</name>
+		<name>uintmax_t</name>
+		<name>uintptr_t</name>
+		<name>size_t</name>
+		<name>ptrdiff_t</name>
+		<name>nullptr_t</name>
+		<name>max_align_t</name>
+		<name>byte</name>
+	</section>
     <section name="PrimitiveType">
         <name>bool</name>
         <name>char</name>

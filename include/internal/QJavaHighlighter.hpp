@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QJAVAHIGHLIGHTER_HPP
+#define QJAVAHIGHLIGHTER_HPP
 
 // QCodeEditor
 #include <QHighlightRule>
@@ -37,3 +38,5 @@ class QJavaHighlighter : public QStyleSyntaxHighlighter
     QRegularExpression m_commentStartPattern;
     QRegularExpression m_commentEndPattern;
 };
+
+#endif

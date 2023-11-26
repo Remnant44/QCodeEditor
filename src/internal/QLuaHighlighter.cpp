@@ -49,11 +49,29 @@ QLuaHighlighter::QLuaHighlighter(QTextDocument *document)
     // Single line
     m_highlightRules.append({QRegularExpression(R"(--[^\n]*)"), "Comment"});
 
-    // Multiline comments
-    m_highlightBlockRules.append({QRegularExpression(R"(--\[\[)"), QRegularExpression(R"(--\]\])"), "Comment"});
-
-    // Multiline string
-    m_highlightBlockRules.append({QRegularExpression(R"(\[\[)"), QRegularExpression(R"(\]\])"), "String"});
+	for(int charCount = 0; charCount < 16; ++charCount) {
+		// Multiline comments
+		m_highlightBlockRules.append({
+			QRegularExpression(
+				QString("--\\[") + QString(charCount,QChar('=')) + "\\["
+			),
+			QRegularExpression(
+				QString("--\\]") + QString(charCount,QChar('=')) + "\\]"
+			),
+			"Comment"
+		});
+		
+		// Multiline strings
+		m_highlightBlockRules.append({
+			QRegularExpression(
+				QString("\\[") + QString(charCount,QChar('=')) + "\\["
+			),
+			QRegularExpression(
+				QString("\\]") + QString(charCount,QChar('=')) + "\\]"
+			),
+			"Comment"
+		});
+	}
 
     // Comment sequences for toggling support
     m_commentLineSequence = "--";
@@ -147,4 +165,40 @@ void QLuaHighlighter::highlightBlock(const QString &text)
         setFormat(startIndex, matchLength, syntaxStyle()->getFormat(blockRules.formatName));
         startIndex = text.indexOf(blockRules.startPattern, startIndex + matchLength);
     }
+}
+
+QString QLuaHighlighter::startToggleCommentBlockSequence(const QString &contents) const
+{
+	if(contents.startsWith("--[")) {
+		for(int chars = 3; chars < contents.size(); ++chars) {
+			if(contents[chars] == '[') {
+				return contents.left(chars+1);
+			}
+		}
+	}
+	
+	QString testString;
+	// Don't try too hard...
+	for(int iUsedChars = 0; iUsedChars < 16; ++iUsedChars) {
+		testString = "--]";
+		testString += QString(iUsedChars, QChar('='));
+		testString += "]";
+		
+		if(contents.indexOf(testString) >= 0)
+			continue;
+		
+		testString = "--[";
+		testString += QString(iUsedChars, QChar('='));
+		testString += "[";
+		return testString;
+	}
+	
+	return "--[[";
+}
+
+QString QLuaHighlighter::endToggleCommentBlockSequence(const QString &start) const
+{
+	QString copy = start;
+	copy.replace('[', ']');
+	return copy;
 }

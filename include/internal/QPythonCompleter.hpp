@@ -1,13 +1,13 @@
-#pragma once
+#ifndef QPYTHONCOMPLETER_HPP
+#define QPYTHONCOMPLETER_HPP
 
-// Qt
-#include <QCompleter> // Required for inheritance
+#include "QCodeEditorCompleter.hpp"
 
 /**
  * @brief Class, that describes completer with
- * glsl specific types and functions.
+ * python specific types and functions.
  */
-class QPythonCompleter : public QCompleter
+class QPythonCompleter : public QCodeEditorCompleter
 {
     Q_OBJECT
 
@@ -18,3 +18,5 @@ class QPythonCompleter : public QCompleter
      */
     explicit QPythonCompleter(QObject *parent = nullptr);
 };
+
+#endif

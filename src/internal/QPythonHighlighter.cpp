@@ -4,7 +4,6 @@
 #include <QSyntaxStyle>
 
 // Qt
-#include <QDebug>
 #include <QFile>
 
 QPythonHighlighter::QPythonHighlighter(QTextDocument *document)

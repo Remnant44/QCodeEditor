@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QHIGHLIGHTBLOCKRULE_HPP
+#define QHIGHLIGHTBLOCKRULE_HPP
 
 // Qt
 #include <QRegularExpression>
@@ -19,3 +20,5 @@ struct QHighlightBlockRule
     QRegularExpression endPattern;
     QString formatName;
 };
+
+#endif

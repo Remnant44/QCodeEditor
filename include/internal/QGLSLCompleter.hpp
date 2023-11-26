@@ -1,13 +1,13 @@
-#pragma once
+#ifndef QGLSLCOMPLETER_HPP
+#define QGLSLCOMPLETER_HPP
 
-// Qt
-#include <QCompleter> // Required for inheritance
+#include "QCodeEditorCompleter.hpp"
 
 /**
  * @brief Class, that describes completer with
  * glsl specific types and functions.
  */
-class QGLSLCompleter : public QCompleter
+class QGLSLCompleter : public QCodeEditorCompleter
 {
     Q_OBJECT
 
@@ -18,3 +18,5 @@ class QGLSLCompleter : public QCompleter
      */
     explicit QGLSLCompleter(QObject *parent = nullptr);
 };
+
+#endif

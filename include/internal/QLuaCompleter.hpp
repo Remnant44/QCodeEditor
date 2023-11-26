@@ -1,13 +1,13 @@
-#pragma once
+#ifndef QLUACOMPLETER_HPP
+#define QLUACOMPLETER_HPP
 
-// Qt
-#include <QCompleter> // Required for inheritance
+#include "QCodeEditorCompleter.hpp"
 
 /**
  * @brief Class, that describes completer with
- * glsl specific types and functions.
+ * lua specific types and functions.
  */
-class QLuaCompleter : public QCompleter
+class QLuaCompleter : public QCodeEditorCompleter
 {
     Q_OBJECT
 
@@ -18,3 +18,5 @@ class QLuaCompleter : public QCompleter
      */
     explicit QLuaCompleter(QObject *parent = nullptr);
 };
+
+#endif
