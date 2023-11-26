@@ -4,6 +4,8 @@
 // Qt
 #include <QTextEdit> // Required for inheritance
 
+#include "QCodeEditorCompleter.hpp"
+
 class QCompleter;
 class QLineNumberArea;
 class QSyntaxStyle;
@@ -121,7 +123,7 @@ class QCodeEditor : public QTextEdit
      * @brief Method for setting completer.
      * @param completer Pointer to completer object.
      */
-    void setCompleter(QCompleter *completer);
+    void setCompleter(QCodeEditorCompleter *completer);
 
     /**
      * @brief Method for getting completer.
@@ -335,13 +337,6 @@ class QCodeEditor : public QTextEdit
     QChar charUnderCursor(int offset = 0) const;
 
     /**
-     * @brief Method for getting word under
-     * cursor.
-     * @return Word under cursor.
-     */
-    QString wordUnderCursor() const;
-
-    /**
      * @brief Method, that adds highlighting of
      * currently selected line to extra selection list.
      */
@@ -394,7 +389,7 @@ class QCodeEditor : public QTextEdit
     QStyleSyntaxHighlighter *m_highlighter;
     QSyntaxStyle *m_syntaxStyle;
     QLineNumberArea *m_lineNumberArea;
-    QCompleter *m_completer;
+    QCodeEditorCompleter *m_completer;
 
     bool m_autoIndentation;
     bool m_replaceTab;

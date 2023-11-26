@@ -6,7 +6,7 @@
 #include <QFile>
 #include <QStringListModel>
 
-QPythonCompleter::QPythonCompleter(QObject *parent) : QCompleter(parent)
+QPythonCompleter::QPythonCompleter(QObject *parent) : QCodeEditorCompleter(parent)
 {
     // Setting up Python types
     QStringList list;
@@ -32,6 +32,8 @@ QPythonCompleter::QPythonCompleter(QObject *parent) : QCompleter(parent)
         auto names = language.names(key);
         list.append(names);
     }
+	
+	list.removeDuplicates();
 
     setModel(new QStringListModel(list, this));
     setCompletionColumn(0);

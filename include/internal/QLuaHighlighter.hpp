@@ -26,6 +26,24 @@ class QLuaHighlighter : public QStyleSyntaxHighlighter
      * @param document Pointer to document.
      */
     explicit QLuaHighlighter(QTextDocument *document = nullptr);
+	
+	/**
+     * @brief Method for getting a sequence that marks a start of a multi line comment block.
+     * @param contents the contents of the comment block that will be created.
+     * @return QString containing the most appropriate sequence that marks a multi line comment block.
+     * @details Returned value can be empty meaning that this language doesn't
+     * support multi line comments
+     */
+    virtual QString startToggleCommentBlockSequence(const QString &contents) const override;
+
+    /**
+     * @brief Method for getting a sequence that marks a end of a multi line comment block.
+     * @param start the start of the comment block that will be created.
+     * @return QString containing the most appropriate sequence that marks an end multi line comment block.
+     * @details Returned value can be empty meaning that this language doesn't
+     * support multi line comments.
+     */
+    virtual QString endToggleCommentBlockSequence(const QString &start) const override;
 
   protected:
     void highlightBlock(const QString &text) override;

@@ -27,22 +27,12 @@ void QStyleSyntaxHighlighter::setCommentLineSequence(const QString &commentLineS
     m_commentLineSequence = commentLineSequence;
 }
 
-QString QStyleSyntaxHighlighter::startCommentBlockSequence() const
+QString QStyleSyntaxHighlighter::startToggleCommentBlockSequence(const QString&) const
 {
     return m_startCommentBlockSequence;
 }
 
-void QStyleSyntaxHighlighter::setStartCommentBlockSequence(const QString &startCommentBlockSequence)
-{
-    m_startCommentBlockSequence = startCommentBlockSequence;
-}
-
-QString QStyleSyntaxHighlighter::endCommentBlockSequence() const
+QString QStyleSyntaxHighlighter::endToggleCommentBlockSequence(const QString&) const
 {
     return m_endCommentBlockSequence;
-}
-
-void QStyleSyntaxHighlighter::setEndCommentBlockSequence(const QString &endCommentBlockSequence)
-{
-    m_endCommentBlockSequence = endCommentBlockSequence;
 }

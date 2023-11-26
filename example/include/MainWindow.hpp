@@ -9,12 +9,12 @@
 #include <QVector>
 #include <QPair>
 
+class QCodeEditorCompleter;
 class QVBoxLayout;
 class QSyntaxStyle;
 class QComboBox;
 class QCheckBox;
 class QSpinBox;
-class QCompleter;
 class QStyleSyntaxHighlighter;
 class QCodeEditor;
 
@@ -67,7 +67,7 @@ private:
     QCodeEditor* m_codeEditor;
 
     QVector<QPair<QString, QString>> m_codeSamples;
-    QVector<QPair<QString, QCompleter*>> m_completers;
+    QVector<QPair<QString, QCodeEditorCompleter*>> m_completers;
     QVector<QPair<QString, QStyleSyntaxHighlighter*>> m_highlighters;
     QVector<QPair<QString, QSyntaxStyle*>> m_styles;
 };

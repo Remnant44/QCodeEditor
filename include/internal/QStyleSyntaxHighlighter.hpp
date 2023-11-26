@@ -53,31 +53,23 @@ class QStyleSyntaxHighlighter : public QSyntaxHighlighter
 
     /**
      * @brief Method for getting a sequence that marks a start of a multi line comment block.
-     * @return QString containing a sequence that marks a multi line comment block.
+     * @param contents the contents of the comment block that will be created.
+     * @return QString containing the most appropriate sequence that marks a multi line comment block.
+     * should return null if the contents begin with a comment already.
      * @details Returned value can be empty meaning that this language doesn't
      * support multi line comments
      */
-    QString startCommentBlockSequence() const;
-
-    /**
-     * @brief Method to set a sequence that marks a start of a multi line comment block.
-     * @param commentLineSequence a sequence that marks a start of a multi line comment block. Can be empty.
-     */
-    void setStartCommentBlockSequence(const QString &startCommentBlockSequence);
+    virtual QString startToggleCommentBlockSequence(const QString &contents) const;
 
     /**
      * @brief Method for getting a sequence that marks a end of a multi line comment block.
-     * @return QString containing a sequence that marks an end multi line comment block.
+     * @param start the start of the comment block that will be created.
+     * @return QString containing the most appropriate sequence that marks an end multi line comment block.
      * @details Returned value can be empty meaning that this language doesn't
      * support multi line comments.
      */
-    QString endCommentBlockSequence() const;
+    virtual QString endToggleCommentBlockSequence(const QString &start) const;
 
-    /**
-     * @brief Method to set a sequence that marks an end of a multi line comment block.
-     * @param commentLineSequence a sequence that marks an end of a multi line comment block. Can be empty.
-     */
-    void setEndCommentBlockSequence(const QString &endCommentBlockSequence);
 
   private:
     QSyntaxStyle *m_syntaxStyle;

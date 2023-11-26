@@ -6,7 +6,7 @@
 #include <QFile>
 #include <QStringListModel>
 
-QGLSLCompleter::QGLSLCompleter(QObject *parent) : QCompleter(parent)
+QGLSLCompleter::QGLSLCompleter(QObject *parent) : QCodeEditorCompleter(parent)
 {
     // Setting up GLSL types
     QStringList list;
@@ -32,6 +32,8 @@ QGLSLCompleter::QGLSLCompleter(QObject *parent) : QCompleter(parent)
         auto names = language.names(key);
         list.append(names);
     }
+	
+	list.removeDuplicates();
 
     setModel(new QStringListModel(list, this));
     setCompletionColumn(0);

@@ -5,6 +5,7 @@ INCLUDEPATH += $$PWD/include
 SOURCES += \
     $$PWD/src/internal/QCXXHighlighter.cpp \
     $$PWD/src/internal/QCodeEditor.cpp \
+    $$PWD/src/internal/QCodeEditorCompleter.cpp \
     $$PWD/src/internal/QGLSLCompleter.cpp \
     $$PWD/src/internal/QGLSLHighlighter.cpp \
     $$PWD/src/internal/QJSHighlighter.cpp \
@@ -23,6 +24,7 @@ SOURCES += \
 HEADERS += \
     $$PWD/include/QCXXHighlighter \
     $$PWD/include/QCodeEditor \
+    $$PWD/include/QCodeEditorCompleter \
     $$PWD/include/QGLSLCompleter \
     $$PWD/include/QGLSLHighlighter \
     $$PWD/include/QHighlightBlockRule \
@@ -41,6 +43,7 @@ HEADERS += \
     $$PWD/include/QXMLHighlighter \
     $$PWD/include/internal/QCXXHighlighter.hpp \
     $$PWD/include/internal/QCodeEditor.hpp \
+    $$PWD/include/internal/QCodeEditorCompleter.hpp \
     $$PWD/include/internal/QGLSLCompleter.hpp \
     $$PWD/include/internal/QGLSLHighlighter.hpp \
     $$PWD/include/internal/QHighlightBlockRule.hpp \
